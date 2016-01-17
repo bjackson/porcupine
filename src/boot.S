@@ -8,7 +8,7 @@ _start:
     ldr     sp, =0x8000
 
     // Run the c startup function - should not return and will call kernel_main
-    b       kmain
+    b       _cstartup
 
 _inf_loop:
     b       _inf_loop

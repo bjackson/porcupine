@@ -6,36 +6,41 @@ volatile unsigned int* gpio_fs4 = (unsigned int*)(GPIO_BASE+0x10);
 
 volatile unsigned int* gpio;
 volatile unsigned int tim;
-int kmain(void)
+int kernel_main( unsigned int r0, unsigned int r1, unsigned int atags )
 {
-  /* Assign the address of the GPIO peripheral (Using ARM Physical Address) */
-  gpio = (unsigned int*)GPIO_BASE;
-
-  /* Write 1 to the GPIO16 init nibble in the Function Select 1 GPIO
-     peripheral register to enable GPIO16 as an output */
-  gpio[LED_GPFSEL] |= (1 << LED_GPFBIT);
-
-  /* Never exit as there is no OS to exit to! */
-  while(1)
-  {
-      for(tim = 0; tim < 500000; tim++);
-
-      /* Set the LED GPIO pin low ( Turn OK LED on for original Pi, and off
-         for plus models )*/
-      gpio[LED_GPCLR] = (1 << LED_GPIO_BIT);
-
-      for(tim = 0; tim < 500000; tim++);
-
-      /* Set the LED GPIO pin high ( Turn OK LED off for original Pi, and on
-         for plus models )*/
-      gpio[LED_GPSET] = (1 << LED_GPIO_BIT);
-  }
-
-    return 0;
+    while (1) {
+      /* code */
+    }
+    return -1;
 }
 
-// void exit(int code)
-// {
-//     while(1)
-//         ;
-// }
+extern int __bss_start__;
+extern int __bss_end__;
+
+void _cstartup( unsigned int r0, unsigned int r1, unsigned int r2 )
+{
+    /*__bss_start__ and __bss_end__ are defined in the linker script */
+    int* bss = &__bss_start__;
+    int* bss_end = &__bss_end__;
+
+    /*
+        Clear the BSS section
+
+        See http://en.wikipedia.org/wiki/.bss for further information on the
+            BSS section
+
+        See https://sourceware.org/newlib/libc.html#Stubs for further
+            information on the c-library stubs
+    */
+    while( bss < bss_end )
+        *bss++ = 0;
+
+    /* We should never return from main ... */
+    kernel_main( r0, r1, r2 );
+
+    /* ... but if we do, safely trap here */
+    while(1)
+    {
+        /* EMPTY! */
+    }
+}
