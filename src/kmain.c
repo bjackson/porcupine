@@ -6,7 +6,7 @@ volatile unsigned int* gpio_fs4 = (unsigned int*)(GPIO_BASE+0x10);
 
 volatile unsigned int* gpio;
 volatile unsigned int tim;
-int main(void)
+int kmain(void)
 {
   /* Assign the address of the GPIO peripheral (Using ARM Physical Address) */
   gpio = (unsigned int*)GPIO_BASE;
@@ -18,7 +18,7 @@ int main(void)
   /* Never exit as there is no OS to exit to! */
   while(1)
   {
-      for(tim = 0; tim < 500000; tim++);  
+      for(tim = 0; tim < 500000; tim++);
 
       /* Set the LED GPIO pin low ( Turn OK LED on for original Pi, and off
          for plus models )*/
@@ -34,8 +34,8 @@ int main(void)
     return 0;
 }
 
-void exit(int code)
-{
-    while(1)
-        ;
-}
+// void exit(int code)
+// {
+//     while(1)
+//         ;
+// }
